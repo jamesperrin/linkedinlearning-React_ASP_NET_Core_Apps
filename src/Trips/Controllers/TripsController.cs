@@ -73,7 +73,7 @@ namespace Trips.Controllers
             return Ok();
         }
 
-        [HttpPut("UpdateTrip")]
+        [HttpPut("UpdateTrip/{id}")]
         public IActionResult UpdateTrip(int id, [FromBody] Trip trip)
         {
             //if (id == 0)

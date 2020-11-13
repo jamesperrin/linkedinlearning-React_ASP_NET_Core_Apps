@@ -5,6 +5,9 @@ export class Trips extends Component {
   constructor(props) {
     super(props);
 
+    this.onTripUpdate = this.onTripUpdate.bind(this);
+    this.onTripDelete = this.onTripDelete.bind(this);
+
     this.state = {
       trips: [],
       loading: true
@@ -28,9 +31,21 @@ export class Trips extends Component {
             <tr key={trip.id}>
               <td>{trip.name}</td>
               <td>{trip.description}</td>
-              <td>{new Date(trip.dateStarted).toLocaleDateString()}</td>
-              <td>{trip.dateCompleted ? new Date(trip.dateCompleted).toLocaleDateString() : '-'}</td>
-              <td>--</td>
+              <td>{new Date(trip.dateStarted).toISOString().slice(0, 10)}</td>
+              <td>{trip.dateCompleted ? new Date(trip.dateCompleted).toISOString().slice(0, 10) : '-'}</td>
+              <td >
+                <div className='form-group'>
+                  <button
+                    className='btn btn-success'
+                    onClick={() => this.onTripUpdate(trip.id)}
+                    title={`Update trip ${trip.name}`}>
+                    Update
+                  </button>
+                  <button className='btn btn-danger' onClick={() => this.onTripDelete(trip.id)} title={`Delete trip ${trip.name}`}>
+                    Delete
+                  </button>
+                </div>
+              </td>
             </tr>
           ))}
         </tbody>
@@ -42,6 +57,15 @@ export class Trips extends Component {
     this.populateTripsData();
   }
 
+  onTripUpdate(id) {
+    const { history } = this.props;
+    history.push(`/update/${id}`);
+  }
+
+  onTripDelete(id) {
+    const { history } = this.props;
+    history.push(`/delete/${id}`);
+  }
   populateTripsData() {
     axios.get('/api/Trips/GetTrips').then((result) => {
       const response = result.data;
