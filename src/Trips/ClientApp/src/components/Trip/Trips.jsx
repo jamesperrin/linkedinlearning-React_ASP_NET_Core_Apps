@@ -29,7 +29,7 @@ export class Trips extends Component {
               <td>{trip.name}</td>
               <td>{trip.description}</td>
               <td>{new Date(trip.dateStarted).toLocaleDateString()}</td>
-              <td>{trip.dataCompleted ? new Date(trip.dataCompleted).toLocaleDateString() : '-'}</td>
+              <td>{trip.dateCompleted ? new Date(trip.dateCompleted).toLocaleDateString() : '-'}</td>
               <td>--</td>
             </tr>
           ))}

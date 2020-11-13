@@ -65,9 +65,12 @@ namespace Trips.Controllers
             //    throw new ArgumentNullException(nameof(trip));
             //}
 
-            _service.AddTrip(trip);
+            if (trip != null)
+            {
+                _service.AddTrip(trip);
+            }
 
-            return View();
+            return Ok();
         }
 
         [HttpPut("UpdateTrip")]
