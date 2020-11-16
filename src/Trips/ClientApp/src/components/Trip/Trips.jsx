@@ -1,5 +1,6 @@
 ﻿import React, { Component } from 'react';
-import axios from 'axios';
+import { connect } from 'react-redux';
+import { getAllTrips } from '../../actions/tripActions';
 
 export class Trips extends Component {
   constructor(props) {
@@ -14,6 +15,26 @@ export class Trips extends Component {
       failed: false,
       error: ''
     };
+  }
+
+  componentDidMount() {
+    this.props.getAllTrips();
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.trips.data != this.props.trips.data) {
+      this.setState({ trips: this.props.trips.data });
+    }
+  }
+
+  onTripUpdate(id) {
+    const { history } = this.props;
+    history.push(`/update/${id}`);
+  }
+
+  onTripDelete(id) {
+    const { history } = this.props;
+    history.push(`/delete/${id}`);
   }
 
   renderAllTripsTable(trips) {
@@ -58,43 +79,13 @@ export class Trips extends Component {
     );
   }
 
-  componentDidMount() {
-    this.populateTripsData();
-  }
-
-  onTripUpdate(id) {
-    const { history } = this.props;
-    history.push(`/update/${id}`);
-  }
-
-  onTripDelete(id) {
-    const { history } = this.props;
-    history.push(`/delete/${id}`);
-  }
-
-  populateTripsData() {
-    axios
-      .get('/api/Trips/GetTrips')
-      .then((result) => {
-        const response = result.data;
-        this.setState({ trips: response, loading: false, failed: false, error: '' });
-      })
-      .catch((error) => {
-        this.setState({ trips: [], loading: false, failed: true, error: 'Trips could not be loaded.' });
-      });
-  }
-
   render() {
-    let content = this.state.loading ? (
+    let content = this.props.trips.loading ? (
       <p>
-        <em>Loading...</em>
+        <em>Loadding...</em>
       </p>
-    ) : this.state.failed ? (
-      <div className='text-danger'>
-        <em>{this.state.error}</em>
-      </div>
     ) : (
-      this.renderAllTripsTable(this.state.trips)
+      this.state.trips.length && this.renderAllTripsTable(this.state.trips)
     );
 
     return (
@@ -106,3 +97,9 @@ export class Trips extends Component {
     );
   }
 }
+
+const mapStateToProps = ({ trips }) => ({
+  trips
+});
+
+export default connect(mapStateToProps, { getAllTrips })(Trips);
