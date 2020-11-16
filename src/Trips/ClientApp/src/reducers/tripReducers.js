@@ -8,7 +8,7 @@ const INITIAL_STATE = {
 };
 
 export default (state = INITIAL_STATE, action) => {
-  switch (action) {
+  switch (action.type) {
     case GET_ALL_TRIPS_REQUEST:
       return {
         ...state,
