@@ -10,7 +10,9 @@ export class Trips extends Component {
 
     this.state = {
       trips: [],
-      loading: true
+      loading: true,
+      failed: false,
+      error: ''
     };
   }
 
@@ -33,7 +35,7 @@ export class Trips extends Component {
               <td>{trip.description}</td>
               <td>{new Date(trip.dateStarted).toISOString().slice(0, 10)}</td>
               <td>{trip.dateCompleted ? new Date(trip.dateCompleted).toISOString().slice(0, 10) : '-'}</td>
-              <td >
+              <td>
                 <div className='form-group'>
                   <button
                     className='btn btn-success'
@@ -41,7 +43,10 @@ export class Trips extends Component {
                     title={`Update trip ${trip.name}`}>
                     Update
                   </button>
-                  <button className='btn btn-danger' onClick={() => this.onTripDelete(trip.id)} title={`Delete trip ${trip.name}`}>
+                  <button
+                    className='btn btn-danger'
+                    onClick={() => this.onTripDelete(trip.id)}
+                    title={`Delete trip ${trip.name}`}>
                     Delete
                   </button>
                 </div>
@@ -66,11 +71,17 @@ export class Trips extends Component {
     const { history } = this.props;
     history.push(`/delete/${id}`);
   }
+
   populateTripsData() {
-    axios.get('/api/Trips/GetTrips').then((result) => {
-      const response = result.data;
-      this.setState({ trips: response, loading: false });
-    });
+    axios
+      .get('/api/Trips/GetTrips')
+      .then((result) => {
+        const response = result.data;
+        this.setState({ trips: response, loading: false, failed: false, error: '' });
+      })
+      .catch((error) => {
+        this.setState({ trips: [], loading: false, failed: true, error: 'Trips could not be loaded.' });
+      });
   }
 
   render() {
@@ -78,6 +89,10 @@ export class Trips extends Component {
       <p>
         <em>Loading...</em>
       </p>
+    ) : this.state.failed ? (
+      <div className='text-danger'>
+        <em>{this.state.error}</em>
+      </div>
     ) : (
       this.renderAllTripsTable(this.state.trips)
     );

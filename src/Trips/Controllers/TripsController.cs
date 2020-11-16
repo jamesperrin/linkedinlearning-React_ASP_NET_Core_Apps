@@ -46,62 +46,83 @@ namespace Trips.Controllers
         {
             try
             {
-                // throw new Exception();
-                var allTrips = _service.GetAllTrips();
+                //throw new Exception();
+
+                List<Trip> allTrips = _service.GetAllTrips();
                 return Ok(allTrips);
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
-
         }
 
         [HttpPost("AddTrip")]
         public IActionResult AddTrip([FromBody] Trip trip)
         {
-            //if (trip == null)
-            //{
-            //    throw new ArgumentNullException(nameof(trip));
-            //}
-
-            if (trip != null)
+            if (trip == null)
             {
-                _service.AddTrip(trip);
+                return BadRequest($"Missing arguement {nameof(trip)}.");
             }
 
-            return Ok();
+            try
+            {
+                if (trip != null)
+                {
+                    _service.AddTrip(trip);
+                }
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPut("UpdateTrip/{id}")]
         public IActionResult UpdateTrip(int id, [FromBody] Trip trip)
         {
-            //if (id == 0)
-            //{
-            //    throw new ArgumentNullException(nameof(id));
-            //}
+            if (id == 0)
+            {
+                return BadRequest($"Missing arguement {nameof(id)}.");
+            }
 
-            //if (trip == null)
-            //{
-            //    throw new ArgumentNullException(nameof(trip));
-            //}
+            if (trip == null)
+            {
+                return BadRequest($"Missing arguement {nameof(trip)}.");
+            }
 
-            _service.UpdateTrip(id, trip);
+            try
+            {
+                _service.UpdateTrip(id, trip);
 
-            return Ok(trip);
+                return Ok(trip);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpDelete("DeleteTrip/{id}")]
         public IActionResult DeleteTrip(int id = 0)
         {
-            //if (id == 0)
-            //{
-            //    throw new ArgumentNullException(nameof(id));
-            //}
+            if (id == 0)
+            {
+                return BadRequest($"Missing arguement {nameof(id)}.");
+            }
 
-            _service.DeleteTrip(id);
+            try
+            {
+                _service.DeleteTrip(id);
 
-            return Ok();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }
